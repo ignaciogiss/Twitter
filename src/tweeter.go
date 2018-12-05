@@ -1,15 +1,8 @@
-package service
-
-import (
-	"github.com/abiosoft/ishell"
-	"github.com/ignaciogiss/twitter/src/service"
-)
-
 package main
 
 import (
 "github.com/abiosoft/ishell"
-"github.com/ignaciogiss/Twitter/src/service"
+"github.com/ignaciogiss/twitter/src/service"
 )
 
 func main() {

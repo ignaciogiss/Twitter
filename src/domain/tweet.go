@@ -2,12 +2,20 @@ package domain
 
 import "time"
 
+type date struct {
+	Date *time.Time
+}
+
+
 type Tweet struct {
 	User string
 	Text string
-	Date time.Time
+	Date *time.Time
 }
 
+
 func NewTweet(user string, text string) *Tweet {
-	return &Tweet{User: user, Text: text, Date: time.Now() }
+	//var nowDate *time.Time = time.Now()
+	nowDate := time.Now()
+	return &Tweet{User: user, Text: text, Date: &nowDate }
 }

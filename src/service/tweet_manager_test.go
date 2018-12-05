@@ -33,7 +33,7 @@ func TestPublishedTweetIsSaved( t *testing.T) {
         t.Errorf("Expected tweet is %s: %s \nbut is %s: %s",
             user, text, publishedTweet.User, publishedTweet.Text)
     }
-    //if publishedTweet.Date == nil {
-    //    t.Error("Expected date can't be nil")
-    //}
+    if publishedTweet.Date == nil {
+        t.Error("Expected date can't be nil")
+    }
 }

@@ -40,6 +40,7 @@ func TestPublishedTweetIsSave(t *testing.T){
 
 
 func TestPublishedTweetIsSaved( t *testing.T) {
+    service.InitializeService()
     var tweet *domain.Tweet
     user := "ignaciogiss"
     text := "this is a tweet"
@@ -60,6 +61,7 @@ func TestPublishedTweetIsSaved( t *testing.T) {
 }
 
 func TestTweetWithoutUserIsntPublished( t *testing.T) {
+    service.InitializeService()
     var tweet *domain.Tweet
 
     var user string
@@ -78,6 +80,7 @@ func TestTweetWithoutUserIsntPublished( t *testing.T) {
 
 
 func TestTweetWithoutTextIsNotPublished( t *testing.T) {
+    service.InitializeService()
     var tweet *domain.Tweet
 
     var text string
@@ -160,6 +163,25 @@ func TestCannotRetrieveTweetByNegativeId(t *testing.T){
 
 
     if (service.GetTweetById( -1 ) != nil) {
+        t.Error("Expected tweet is nil")
+    }
+
+}
+
+func TestCannotRetrieveTweetByInvalidId(t *testing.T){
+    service.InitializeService()
+
+    var tweet *domain.Tweet
+
+    user := "grupoesfera"
+    text := "This is my first tweet"
+
+    tweet = domain.NewTweet(user, text)
+
+    _, _ = service.PublishTweet(tweet)
+
+
+    if (service.GetTweetById( 123 ) != nil) {
         t.Error("Expected tweet is nil")
     }
 

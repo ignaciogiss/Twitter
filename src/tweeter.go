@@ -32,7 +32,7 @@ func main() {
 
 			tweet = domain.NewTweet(user, text)
 
-			service.PublishTweet(tweet)
+			tweetManager.PublishTweet(tweet)
 
 			c.Print("Tweet sent\n")
 
@@ -47,7 +47,7 @@ func main() {
 
 			defer c.ShowPrompt(true)
 
-			tweet := service.GetTweet()
+			tweet := tweetManager.GetTweet()
 
 			c.Println("Dia:     ", tweet.Date )
 			c.Println("Usuario: ", tweet.User)
@@ -71,7 +71,7 @@ func main() {
 			id_str := c.ReadLine()
 			id, _ := strconv.Atoi(id_str )
 
-			tweet = service.GetTweetById(id)
+			tweet = tweetManager.GetTweetById(id)
 
 			c.Println("Dia:     ", tweet.Date )
 			c.Println("Usuario: ", tweet.User)

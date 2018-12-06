@@ -4,6 +4,7 @@ import (
 	"github.com/abiosoft/ishell"
 	"github.com/ignaciogiss/twitter/src/domain"
 	"github.com/ignaciogiss/twitter/src/service"
+	"strconv"
 )
 
 func main() {
@@ -47,6 +48,30 @@ func main() {
 			defer c.ShowPrompt(true)
 
 			tweet := service.GetTweet()
+
+			c.Println("Dia:     ", tweet.Date )
+			c.Println("Usuario: ", tweet.User)
+			c.Println("Tweet:   ", tweet.Text)
+
+			return
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
+		Name: "getTweetById",
+		Help: "Retrieves a tweet by its ID",
+		Func: func(c *ishell.Context) {
+
+			defer c.ShowPrompt(true)
+
+			var tweet *domain.Tweet
+
+			c.Print("Search ID: ")
+
+			id_str := c.ReadLine()
+			id, _ := strconv.Atoi(id_str )
+
+			tweet = service.GetTweetById(id)
 
 			c.Println("Dia:     ", tweet.Date )
 			c.Println("Usuario: ", tweet.User)

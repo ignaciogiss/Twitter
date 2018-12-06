@@ -1,8 +1,13 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
+
+const INIT_ID = 0
 
 type Tweet struct {
+	Id int
 	User string
 	Text string
 	Date *time.Time
@@ -12,9 +17,6 @@ func NewTweet(user string, text string) *Tweet {
 	//var nowDate *time.Time = time.Now()
 	nowDate := time.Now()
 
-	if text == "" {
-		text = "lakds"
-	}
 
-	return &Tweet{User: user, Text: text, Date: &nowDate }
+	return &Tweet{Id: INIT_ID, User: user, Text: text, Date: &nowDate }
 }

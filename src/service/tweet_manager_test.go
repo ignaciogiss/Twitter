@@ -10,9 +10,15 @@ import (
 
 func isValidTweet(t *testing.T, tweet *domain.Tweet, user string, text string) bool {
     if tweet == nil {
+        t.Error("Tweet is nil")
         return false
     }
-    if tweet.User != user || tweet.Text != text {
+    if tweet.User != user {
+        t.Error("Expected user is ", user)
+        return false
+    }
+    if tweet.Text != text {
+        t.Error("Expected text is ", text)
         return false
     }
     return true
@@ -30,6 +36,7 @@ func TestPublishedTweetIsSave(t *testing.T){
     }
 }
 */
+
 
 
 func TestPublishedTweetIsSaved( t *testing.T) {
@@ -61,7 +68,7 @@ func TestTweetWithoutUserIsntPublished( t *testing.T) {
     tweet = domain.NewTweet(user, text)
 
     var err error
-    err = service.PublishTweet(tweet)
+    _, err = service.PublishTweet(tweet)
 
     if err != nil && err.Error() != "user is required" {
         t.Error("Expected error user is required")
@@ -79,7 +86,7 @@ func TestTweetWithoutTextIsNotPublished( t *testing.T) {
     tweet = domain.NewTweet(user, text)
 
     var err error
-    err = service.PublishTweet(tweet)
+    _, err = service.PublishTweet(tweet)
 
     if err != nil && err.Error() != "text is required" {
         t.Error("Expected error text is required")
@@ -107,7 +114,7 @@ func TestCanPublishAndRetrieveMoreThanOneTweet( t *testing.T) {
         t.Errorf("Expected size is 2 but was %d", len(publishedTweets))
         return
     }
-    
+
     firstPublishedTweet := publishedTweets[0]
     secondPublishedTweet := publishedTweets[1]
 
@@ -118,7 +125,24 @@ func TestCanPublishAndRetrieveMoreThanOneTweet( t *testing.T) {
     if !isValidTweet(t, secondPublishedTweet, user2, text2 ) {
         return
     }
+}
 
 
+func TestCanRetrieveTweetById(t *testing.T){
+    service.InitializeService()
+
+    var tweet *domain.Tweet
+    var id int
+
+    user := "grupoesfera"
+    text := "This is my first tweet"
+
+    tweet = domain.NewTweet(user, text)
+
+    id, _ = service.PublishTweet(tweet)
+
+    publishedTweet := service.GetTweetById( id )
+
+    isValidTweet(t, publishedTweet, user,   text )
 }
 

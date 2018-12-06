@@ -146,3 +146,18 @@ func TestCanRetrieveTweetById(t *testing.T){
     isValidTweet(t, publishedTweet, user,   text )
 }
 
+func TestCannotRetrieveTweetByNegativeId(t *testing.T){
+    service.InitializeService()
+
+    var tweet *domain.Tweet
+
+    user := "grupoesfera"
+    text := "This is my first tweet"
+
+    tweet = domain.NewTweet(user, text)
+
+    _, _ = service.PublishTweet(tweet)
+
+    service.GetTweetById( -1 )
+
+}

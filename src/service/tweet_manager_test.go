@@ -158,6 +158,114 @@ func TestCannotRetrieveTweetByNegativeId(t *testing.T){
 
     _, _ = service.PublishTweet(tweet)
 
-    service.GetTweetById( -1 )
+
+    if (service.GetTweetById( -1 ) != nil) {
+        t.Error("Expected tweet is nil")
+    }
+
+}
+
+func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
+    // Initialization
+    service.InitializeService()
+    var tweet, secondTweet, thirdTweet *domain.Tweet
+    user := "grupoesfera"
+    anotherUser := "nick"
+    text := "This is my first tweet"
+    secondText := "This is my second tweet"
+    tweet = domain.NewTweet(user, text)
+    secondTweet = domain.NewTweet(user, secondText)
+    thirdTweet = domain.NewTweet(anotherUser, text)
+    service.PublishTweet(tweet)
+    service.PublishTweet(secondTweet)
+    service.PublishTweet(thirdTweet)
+    // Operation
+    count := service.CountTweetsByUser(user)
+    // Validation
+    if count != 2 {
+        t.Errorf("Expected count is 2 but was %d", count)
+    }
+}
+
+func TestCountTheTweetsSentByAnInvalidUserIsZero(t *testing.T) {
+    // Initialization
+    service.InitializeService()
+    var tweet, secondTweet, thirdTweet *domain.Tweet
+    user := "grupoesfera"
+    anotherUser := "nick"
+    text := "This is my first tweet"
+    secondText := "This is my second tweet"
+    tweet = domain.NewTweet(user, text)
+    secondTweet = domain.NewTweet(user, secondText)
+    thirdTweet = domain.NewTweet(anotherUser, text)
+    service.PublishTweet(tweet)
+    service.PublishTweet(secondTweet)
+    service.PublishTweet(thirdTweet)
+    // Operation
+    user = ""
+    count := service.CountTweetsByUser(user)
+    // Validation
+    if count != 0 {
+        t.Errorf("Expected count is 0 but was %d", count)
+    }
+}
+
+func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
+    // Initialization
+    service.InitializeService()
+    var tweet, secondTweet, thirdTweet *domain.Tweet
+    user := "grupoesfera"
+    anotherUser := "nick"
+    text := "This is my first tweet"
+    secondText := "This is my second tweet"
+    tweet = domain.NewTweet(user, text)
+    secondTweet = domain.NewTweet(user, secondText)
+    thirdTweet = domain.NewTweet(anotherUser, text)
+    // publish the 3 tweets
+    service.PublishTweet(tweet)
+    service.PublishTweet(secondTweet)
+    service.PublishTweet(thirdTweet)
+
+    // Operation
+    tweets := service.GetTweetsByUser(user)
+
+    // Validation
+    if len(tweets) != 2 { /* handle error */ }
+    firstPublishedTweet := tweets[0]
+    secondPublishedTweet := tweets[1]
+    if !isValidTweet(t, firstPublishedTweet, user, text ) {
+        return
+    }
+    if !isValidTweet(t, secondPublishedTweet, user, secondText ) {
+        return
+    }
+    if !isValidTweet(t, thirdTweet, anotherUser, text ) {
+        return
+    }
+}
+
+func TestCannotRetrieveTheTweetsSentByAnInvalidUser(t *testing.T) {
+    // Initialization
+    service.InitializeService()
+    var tweet, secondTweet, thirdTweet *domain.Tweet
+    user := "grupoesfera"
+    anotherUser := "nick"
+    text := "This is my first tweet"
+    secondText := "This is my second tweet"
+    tweet = domain.NewTweet(user, text)
+    secondTweet = domain.NewTweet(user, secondText)
+    thirdTweet = domain.NewTweet(anotherUser, text)
+    // publish the 3 tweets
+    service.PublishTweet(tweet)
+    service.PublishTweet(secondTweet)
+    service.PublishTweet(thirdTweet)
+
+    // Operation
+    user = ""
+     service.GetTweetsByUser(user)
+
+    if (service.GetTweetsByUser(user) != nil) {
+        t.Error("Expected tweet is nil")
+    }
 
 }

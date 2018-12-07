@@ -9,12 +9,13 @@ import (
 // }
 
 type TweetManager struct {
-	tweet *domain.Tweet
-	tweets map[string][]*domain.Tweet
+	tweet domain.Tweet
+	tweets map[string][]domain.Tweet
 	lastId int
 }
 
+
 func  NewTweetManager( ) *TweetManager {
 
-	return &TweetManager{ tweets : make(map[string][]*domain.Tweet), lastId: 0 }
+	return &TweetManager{ tweets : make(map[string][]domain.Tweet), lastId: 0 }
 }

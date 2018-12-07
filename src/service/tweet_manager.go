@@ -7,14 +7,14 @@ import (
 
 
 
-func (tweetManager TweetManager ) GetTweetById(id int ) *domain.Tweet {
+func (tweetManager TweetManager ) GetTweetById(id int ) domain.Tweet {
 	if id < 0 {
 		return nil
 	}
 
 	for _, ts := range tweetManager.tweets {
 		for _, t := range ts {
-			if t.Id == id {
+			if t.GetId() == id {
 				return t
 		    }
 		}
@@ -23,7 +23,7 @@ func (tweetManager TweetManager ) GetTweetById(id int ) *domain.Tweet {
 	return nil
 }
 
-func (tweetManager TweetManager ) GetTweetsByUser( user string ) []*domain.Tweet {
+func (tweetManager TweetManager ) GetTweetsByUser( user string ) []domain.Tweet {
 	if user == "" {
 		return nil
 	}
@@ -39,27 +39,27 @@ func (tweetManager TweetManager ) CountTweetsByUser( user string ) int {
 	return len(tweetManager.tweets[user])
 }
 
-func (tweetManager TweetManager ) PublishTweet(t *domain.Tweet) (int, error ) {
-    if len( t.User) == 0 {
+func (tweetManager TweetManager ) PublishTweet(t domain.Tweet) (int, error ) {
+    if len( t.GetUser()) == 0 {
 		return -1, fmt.Errorf("user is required" )
 	}
-	if len( t.Text) == 0 {
+	if len( t.GetText()) == 0 {
 		return -1, fmt.Errorf("text is required" )
 	}
 
-    t.Id = tweetManager.lastId
+    t.SetId( tweetManager.lastId )
 	tweetManager.lastId++
-	tweetManager.tweet = t  // mantinene retro con primeros test de unico tweet
-    _, existe := tweetManager.tweets[t.User]
+	tweetManager.tweet = t  // mantiene retro con primeros test de unico tweet
+    _, existe := tweetManager.tweets[t.GetUser()]
     if !existe {
-		tweetManager.tweets[t.User] = make([]*domain.Tweet, 0)
+		tweetManager.tweets[t.GetUser()] = make([]domain.Tweet, 0)
 	}
-	tweetManager.tweets[t.User] = append( tweetManager.tweets[t.User], t)
-	return t.Id, nil
+	tweetManager.tweets[t.GetUser()] = append( tweetManager.tweets[t.GetUser()], t)
+	return t.GetId(), nil
 }
 
-func (tweetManager TweetManager ) GetTweets() []*domain.Tweet{
-	var allTweets []*domain.Tweet
+func (tweetManager TweetManager ) GetTweets() []domain.Tweet{
+	var allTweets []domain.Tweet
 
 	for _, t := range tweetManager.tweets {
 		allTweets = append(allTweets, t...)
@@ -67,7 +67,8 @@ func (tweetManager TweetManager ) GetTweets() []*domain.Tweet{
 	return allTweets
 }
 
-
-func (tweetManager TweetManager ) GetTweet() *domain.Tweet{
+/*
+func (tweetManager TweetManager ) GetTweet() domain.Tweet{
 	return tweetManager.tweet
 }
+*/

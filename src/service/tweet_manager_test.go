@@ -450,4 +450,5 @@ func TestCanSearchForTweetContainingText(t *testing.T) {
     if !strings.Contains(foundTweet.GetText(), query){
         t.Errorf("Expected tweet is %s  but was %s", text, foundTweet.GetText() )
     }
+    
 }

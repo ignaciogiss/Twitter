@@ -62,7 +62,9 @@ func TestPublishedTweetIsSaved( t *testing.T) {
 */
 
 func TestTweetWithoutUserIsntPublished( t *testing.T) {
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet *domain.TextTweet
 
@@ -82,7 +84,9 @@ func TestTweetWithoutUserIsntPublished( t *testing.T) {
 
 
 func TestTweetWithoutTextIsNotPublished( t *testing.T) {
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet *domain.TextTweet
 
@@ -102,7 +106,9 @@ func TestTweetWithoutTextIsNotPublished( t *testing.T) {
 //func TestTweetWichExceeding140CharacterIsNotPublished( t *testing.T) {}
 
 func TestCanPublishAndRetrieveMoreThanOneTweet( t *testing.T) {
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet, secondTweet *domain.TextTweet
     user1 := "ignaciogiss"
@@ -136,7 +142,9 @@ func TestCanPublishAndRetrieveMoreThanOneTweet( t *testing.T) {
 
 
 func TestCanRetrieveTweetById(t *testing.T){
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet *domain.TextTweet
     var id int
@@ -154,7 +162,9 @@ func TestCanRetrieveTweetById(t *testing.T){
 }
 
 func TestCannotRetrieveTweetByNegativeId(t *testing.T){
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet *domain.TextTweet
 
@@ -173,7 +183,9 @@ func TestCannotRetrieveTweetByNegativeId(t *testing.T){
 }
 
 func TestCannotRetrieveTweetByInvalidId(t *testing.T){
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet *domain.TextTweet
 
@@ -192,7 +204,9 @@ func TestCannotRetrieveTweetByInvalidId(t *testing.T){
 }
 
 func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet, secondTweet, thirdTweet *domain.TextTweet
     user := "grupoesfera"
@@ -214,7 +228,9 @@ func TestCanCountTheTweetsSentByAnUser(t *testing.T) {
 }
 
 func TestCountTheTweetsSentByAnInvalidUserIsZero(t *testing.T) {
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet, secondTweet, thirdTweet *domain.TextTweet
     user := "grupoesfera"
@@ -237,7 +253,9 @@ func TestCountTheTweetsSentByAnInvalidUserIsZero(t *testing.T) {
 }
 
 func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet, secondTweet, thirdTweet *domain.TextTweet
     user := "grupoesfera"
@@ -256,7 +274,7 @@ func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
     tweets := tweetManager.GetTweetsByUser(user)
 
     // Validation
-    if len(tweets) != 2 { /* handle error */ }
+    // if len(tweets) != 2 {  handle error  }
     firstPublishedTweet := tweets[0]
     secondPublishedTweet := tweets[1]
     if !isValidTweet(t, firstPublishedTweet, user, text ) {
@@ -271,7 +289,9 @@ func TestCanRetrieveTheTweetsSentByAnUser(t *testing.T) {
 }
 
 func TestCannotRetrieveTheTweetsSentByAnInvalidUser(t *testing.T) {
-    tweetManager := service.NewTweetManager()
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
 
     var tweet, secondTweet, thirdTweet *domain.TextTweet
     user := "grupoesfera"
@@ -297,11 +317,24 @@ func TestCannotRetrieveTheTweetsSentByAnInvalidUser(t *testing.T) {
 }
 
 func TestUserCanLogin(t *testing.T) {
-    tweetManager := service.NewTweetManager()
-    // TODO
-/*
-    var tweet, secondTweet, thirdTweet *domain.TextTweet
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
+
     user := "grupoesfera"
+    mail := "nick@grupoesfera.com"
+    nick := "nick"
+    password := "123456"
+    if ( ! tweetManager.RegisterUser(user, mail, nick, password ) ) {
+        return // TODO: validar test
+    }
+    if ( ! tweetManager.LoginUser(user, password ) ) {
+        return // TODO: validar test
+    }
+
+
+    var tweet, secondTweet, thirdTweet *domain.TextTweet
+
     anotherUser := "nick"
     text := "This is my first tweet"
     secondText := "This is my second tweet"
@@ -320,5 +353,64 @@ func TestUserCanLogin(t *testing.T) {
     if (tweetManager.GetTweetsByUser(user) != nil) {
         t.Error("Expected tweet is nil")
     }
-*/
+
+}
+
+
+func TestPublishedTweetIsSavedToExternalResource(t *testing.T) {
+
+    // Initialization
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
+
+    var tweet domain.Tweet // Fill the tweet with data
+
+    //var tweet *domain.TextTweet
+    user := "grupoesfera"
+    text := "This is my first tweet"
+    tweet = domain.NewTextTweet(user, text)
+    // Operation
+    id, _ := tweetManager.PublishTweet(tweet)
+
+    // Validation
+    memoryWriter := (tweetWriter).(*service.MemoryTweetWriter)
+    savedTweet := memoryWriter.GetLastSavedTweet()
+
+    if savedTweet == nil {
+        t.Errorf("Expected tweet but was nil" )
+        return
+    }
+    if savedTweet.GetId() != id  {
+        t.Errorf("Expected id is %d but was %d", id, savedTweet.GetId() )
+    }
+}
+
+func TestPublishedTweetIsSavedToFile(t *testing.T) {
+
+    // Initialization
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewFileTweetWriter() // Mock implementation
+    tweetManager := service.NewTweetManager(tweetWriter)
+
+    var tweet domain.Tweet // Fill the tweet with data
+
+    //var tweet *domain.TextTweet
+    user := "grupoesfera"
+    text := "This is my first tweet"
+    tweet = domain.NewTextTweet(user, text)
+    // Operation
+    id, _ := tweetManager.PublishTweet(tweet)
+
+    // Validation
+    fileWriter := (tweetWriter).(*service.FileTweetWriter)
+    savedTweet := fileWriter.GetLastSavedTweet()
+
+    if savedTweet == nil {
+        t.Errorf("Expected tweet but was nil" )
+        return
+    }
+    if savedTweet.GetId() != id  {
+        t.Errorf("Expected id is %d but was %d", id, savedTweet.GetId() )
+    }
 }

@@ -12,10 +12,12 @@ type TweetManager struct {
 	tweet domain.Tweet
 	tweets map[string][]domain.Tweet
 	lastId int
+	registeredUsers []*domain.User
+	TweetWriter
 }
 
 
-func  NewTweetManager( ) *TweetManager {
+func  NewTweetManager( writer TweetWriter ) *TweetManager {
 
-	return &TweetManager{ tweets : make(map[string][]domain.Tweet), lastId: 0 }
+	return &TweetManager{ TweetWriter: writer, tweets : make(map[string][]domain.Tweet), lastId: 0 }
 }

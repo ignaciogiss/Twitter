@@ -55,6 +55,7 @@ func (tweetManager TweetManager ) PublishTweet(t domain.Tweet) (int, error ) {
 		tweetManager.tweets[t.GetUser()] = make([]domain.Tweet, 0)
 	}
 	tweetManager.tweets[t.GetUser()] = append( tweetManager.tweets[t.GetUser()], t)
+	tweetManager.TweetWriter.WriteTweet( t )
 	return t.GetId(), nil
 }
 
@@ -72,3 +73,19 @@ func (tweetManager TweetManager ) GetTweet() domain.Tweet{
 	return tweetManager.tweet
 }
 */
+func (tweetManager *TweetManager ) RegisterUser(name string, mail string, nick string, password string) bool{
+	tweetManager.registeredUsers = append( tweetManager.registeredUsers, domain.NewUser(name , mail , nick , password ))
+	return true // TODO: caso false
+}
+
+func (tweetManager TweetManager ) LoginUser(name string, password string) bool{
+	for _, u := range tweetManager.registeredUsers {
+		if u.Name == name {
+			if u.PasswordOk(password) {
+				return true
+			}
+		}
+	}
+     return false
+}
+

@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/ignaciogiss/twitter/src/domain"
+	"strings"
 )
 
 
@@ -89,3 +90,16 @@ func (tweetManager TweetManager ) LoginUser(name string, password string) bool{
      return false
 }
 
+
+func (tweetManager *TweetManager ) SearchTweetsContaining(query string, searchResult chan domain.Tweet) {
+
+	go func() {
+		for _, ts := range tweetManager.tweets {
+			for _, t := range ts {
+				if strings.Contains( t.GetText(), query )	 {
+					searchResult <- t
+					}
+			}
+		}
+	}()
+}

@@ -2,8 +2,11 @@ package service
 
 import (
 	"github.com/ignaciogiss/twitter/src/domain"
+	"io/ioutil"
 	"os"
 )
+
+const SAVEFILE string = "tweets.txt"
 
 type TweetWriter interface {
 	WriteTweet(tweet domain.Tweet )
@@ -36,7 +39,7 @@ type FileTweetWriter struct {
 
 func NewFileTweetWriter() *FileTweetWriter {
 	file, _ := os.OpenFile(
-		"tweets.txt",
+		SAVEFILE,
 		os.O_WRONLY|os.O_TRUNC|os.O_CREATE,
 		0666,
 	)
@@ -58,6 +61,11 @@ func (writer *FileTweetWriter) WriteTweet(tweet domain.Tweet) {
 }
 
 
-func (fileTweetWriter FileTweetWriter) GetLastSavedTweet() domain.Tweet {
-	return nil // TODO
+func (fileTweetWriter FileTweetWriter) GetSavedTweets() string{
+	dat, err := ioutil.ReadFile(SAVEFILE)
+	if err != nil {
+		panic(err)
+	}
+	tmpstr := string(dat) // TODO
+	return tmpstr
 }

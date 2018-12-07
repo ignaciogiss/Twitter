@@ -4,6 +4,7 @@ import (
     _ "github.com/abiosoft/ishell"
     "github.com/ignaciogiss/twitter/src/domain"
     "github.com/ignaciogiss/twitter/src/service"
+    "strings"
     "testing"
 )
 
@@ -400,17 +401,53 @@ func TestPublishedTweetIsSavedToFile(t *testing.T) {
     text := "This is my first tweet"
     tweet = domain.NewTextTweet(user, text)
     // Operation
-    id, _ := tweetManager.PublishTweet(tweet)
+    tweetManager.PublishTweet(tweet)
 
     // Validation
     fileWriter := (tweetWriter).(*service.FileTweetWriter)
-    savedTweet := fileWriter.GetLastSavedTweet()
+    savedTweet := fileWriter.GetSavedTweets()
 
-    if savedTweet == nil {
-        t.Errorf("Expected tweet but was nil" )
+    //fmt.Println(savedTweet)
+
+    if true  {
+        t.Errorf("Expected id is %s ", savedTweet )
+    }
+}
+
+
+func TestCanSearchForTweetContainingText(t *testing.T) {
+    // Initialization
+    var tweetWriter service.TweetWriter
+    tweetWriter = service.NewMemoryTweetWriter()
+    tweetManager := service.NewTweetManager(tweetWriter)
+    // Create and publish a tweet
+    var tweet, secondTweet, thirdTweet *domain.TextTweet
+    user := "grupoesfera"
+    anotherUser := "nick"
+    text := "This is my first tweet"
+    secondText := "This is my second tweet"
+    tweet = domain.NewTextTweet(user, text)
+    secondTweet = domain.NewTextTweet(user, secondText)
+    thirdTweet = domain.NewTextTweet(anotherUser, text)
+
+    tweetManager.PublishTweet(tweet)
+    tweetManager.PublishTweet(secondTweet)
+    tweetManager.PublishTweet(thirdTweet)
+
+    // Operation
+    searchResult := make(chan domain.Tweet)
+    query := "first"
+    tweetManager.SearchTweetsContaining(query, searchResult)
+
+    // Validation
+    foundTweet := <-searchResult
+
+    if foundTweet == nil  {
+        t.Errorf("Expected tweet is %s  but was nil", text )
         return
     }
-    if savedTweet.GetId() != id  {
-        t.Errorf("Expected id is %d but was %d", id, savedTweet.GetId() )
+
+    if !strings.Contains(foundTweet.GetText(), query){
+        t.Errorf("Expected tweet is %s  but was %s", text, foundTweet.GetText() )
     }
 }

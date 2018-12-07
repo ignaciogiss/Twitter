@@ -406,11 +406,12 @@ func TestPublishedTweetIsSavedToFile(t *testing.T) {
     // Validation
     fileWriter := (tweetWriter).(*service.FileTweetWriter)
     savedTweet := fileWriter.GetSavedTweets()
+    savedTweet = savedTweet[:len(savedTweet)-1]
 
     //fmt.Println(savedTweet)
 
-    if true  {
-        t.Errorf("Expected id is %s ", savedTweet )
+    if savedTweet != tweet.PrintableTweet()  {
+        t.Errorf("Expected tweet is %s but was %s ", tweet.PrintableTweet(),  savedTweet )
     }
 }
 
@@ -450,5 +451,5 @@ func TestCanSearchForTweetContainingText(t *testing.T) {
     if !strings.Contains(foundTweet.GetText(), query){
         t.Errorf("Expected tweet is %s  but was %s", text, foundTweet.GetText() )
     }
-    
+
 }

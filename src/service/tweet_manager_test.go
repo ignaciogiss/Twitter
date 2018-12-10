@@ -327,10 +327,13 @@ func TestUserCanLogin(t *testing.T) {
     nick := "nick"
     password := "123456"
     if ( ! tweetManager.RegisterUser(user, mail, nick, password ) ) {
-        return // TODO: validar test
+        t.Error("Expected Register")
+        return
     }
+
     if ( ! tweetManager.LoginUser(user, password ) ) {
-        return // TODO: validar test
+        t.Error("Expected login")
+        return
     }
 
 

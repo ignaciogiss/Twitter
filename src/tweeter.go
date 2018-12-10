@@ -3,11 +3,18 @@ package main
 import (
 	"github.com/abiosoft/ishell"
 	"github.com/ignaciogiss/twitter/src/domain"
+	"github.com/ignaciogiss/twitter/src/rest"
 	"github.com/ignaciogiss/twitter/src/service"
 	"strconv"
 )
 
 func main() {
+	var tweetWriter service.TweetWriter
+	tweetWriter = service.NewFileTweetWriter()
+	tweetManager := service.NewTweetManager(tweetWriter)
+	restServer := rest.NewRestTweetServer(tweetManager)
+	restServer.StartRestServer()
+
 
 	shell := ishell.New()
 	shell.SetPrompt("Tweeter >> ")
@@ -20,7 +27,7 @@ func main() {
 
 			defer c.ShowPrompt(true)
 
-			var tweet *domain.Tweet
+			var tweet domain.Tweet
 
 			c.Print("Write your user: ")
 
@@ -30,7 +37,7 @@ func main() {
 
 			text := c.ReadLine()
 
-			tweet = domain.NewTweet(user, text)
+			tweet = domain.NewTextTweet(user, text)
 
 			tweetManager.PublishTweet(tweet)
 
@@ -39,7 +46,7 @@ func main() {
 			return
 		},
 	})
-
+/*
 	shell.AddCmd(&ishell.Cmd{
 		Name: "showTweet",
 		Help: "Shows a tweet",
@@ -49,14 +56,14 @@ func main() {
 
 			tweet := tweetManager.GetTweet()
 
-			c.Println("Dia:     ", tweet.Date )
-			c.Println("Usuario: ", tweet.User)
-			c.Println("Tweet:   ", tweet.Text)
+			c.Println("Dia:     ", tweet.GetDate() )
+			c.Println("Usuario: ", tweet.GetUser() )
+			c.Println("Tweet:   ", tweet.GetText() )
 
 			return
 		},
 	})
-
+*/
 	shell.AddCmd(&ishell.Cmd{
 		Name: "getTweetById",
 		Help: "Retrieves a tweet by its ID",
@@ -64,7 +71,7 @@ func main() {
 
 			defer c.ShowPrompt(true)
 
-			var tweet *domain.Tweet
+			var tweet domain.Tweet
 
 			c.Print("Search ID: ")
 
@@ -73,9 +80,34 @@ func main() {
 
 			tweet = tweetManager.GetTweetById(id)
 
-			c.Println("Dia:     ", tweet.Date )
-			c.Println("Usuario: ", tweet.User)
-			c.Println("Tweet:   ", tweet.Text)
+			c.Println("Dia:     ", tweet.GetDate() )
+			c.Println("Usuario: ", tweet.GetUser())
+			c.Println("Tweet:   ", tweet.GetText())
+
+			return
+		},
+	})
+
+	shell.AddCmd(&ishell.Cmd{
+		Name: "getTweetsByUser",
+		Help: "Retrieves a tweets by user",
+		Func: func(c *ishell.Context) {
+
+			defer c.ShowPrompt(true)
+
+			var tweets []domain.Tweet
+
+			c.Print("Search User: ")
+
+			user := c.ReadLine()
+
+			tweets = tweetManager.GetTweetsByUser( user )
+
+			for _, tweet := range tweets {
+				c.Println("Dia:     ", tweet.GetDate() )
+				c.Println("Usuario: ", tweet.GetUser())
+				c.Println("Tweet:   ", tweet.GetText())
+			}
 
 			return
 		},
@@ -84,6 +116,3 @@ func main() {
 	shell.Run()
 
 }
-
-
-

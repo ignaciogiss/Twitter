@@ -40,7 +40,7 @@ func (tweetManager TweetManager ) CountTweetsByUser( user string ) int {
 	return len(tweetManager.tweets[user])
 }
 
-func (tweetManager TweetManager ) PublishTweet(t domain.Tweet) (int, error ) {
+func (tweetManager *TweetManager ) PublishTweet(t domain.Tweet) (int, error ) {
     if len( t.GetUser()) == 0 {
 		return -1, fmt.Errorf("user is required" )
 	}

@@ -9,6 +9,7 @@ const INIT_ID = 0
 
 type Tweet interface {
 	PrintableTweet() string
+	GetDate() *time.Time
 	GetUser() string
 	GetId() int
 	SetId(id int)
@@ -36,6 +37,9 @@ func (tweet TextTweet ) PrintableTweet() string {
 
 func (tweet TextTweet ) GetId() int {
 	return tweet.Id
+}
+func (tweet TextTweet ) GetDate() *time.Time {
+	return tweet.Date
 }
 func (tweet *TextTweet ) SetId(id int) {
 	tweet.Id = id
